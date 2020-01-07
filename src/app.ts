@@ -1,6 +1,5 @@
 /// <reference path="../typings.d.ts" />
 import * as path from 'path';
-import * as favicon from 'serve-favicon';
 import * as HttpStatus from 'http-status-codes';
 
 import * as cookieParser from 'cookie-parser';
@@ -27,9 +26,6 @@ const app: express.Application = express();
 app.set('views', path.join(__dirname, '../views'));
 app.engine('.ejs', ejs.renderFile);
 app.set('view engine', 'ejs');
-
-//uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname,'../public','favicon.ico')));
 
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
