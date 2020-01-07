@@ -8,6 +8,7 @@ import * as bodyParser from 'body-parser';
 import * as ejs from 'ejs';
 import * as express from 'express';
 import * as cors from 'cors';
+import * as helmet from 'helmet';
 
 import { Router, Request, Response, NextFunction } from 'express';
 
@@ -15,6 +16,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import adminRoute from './routes/admin/index';
 import memberRoute from './routes/member/index';
 import indexRoute from './routes/index';
+import { Database } from './utils/database';
 
 // configure environment
 require('dotenv').config({ path: path.join(__dirname, '../config') });
@@ -34,11 +36,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.use(helmet());
+app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }))
+
 app.use(cors());
 
 const api = express.Router();
 const admin = express.Router();
 const member = express.Router();
+
+// Database connection
+const db = new Database();
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  req.db = process.env.DB_CLIENT === 'mysql' ? db.getMySQLConnection() : db.getPostgreSQLConnection();
+  next();
+});
 
 // default route
 app.use('/', indexRoute);
@@ -55,7 +68,6 @@ admin.use('/', adminRoute);
 api.use('/member', member);
 member.use('/', memberRoute);
 //error handlers
-
 if (process.env.NODE_ENV === 'development') {
   app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.log(err.stack);

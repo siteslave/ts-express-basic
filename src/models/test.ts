@@ -3,11 +3,11 @@ import * as knex from 'knex';
 export class TestModel {
 
   testData(db: knex) {
-    return db('test').select();
+    return db('users').select();
   }
 
   testMessage() {
-      return 'Hello world!';
+    return 'Hello world!';
   }
 
 }
