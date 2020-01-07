@@ -15,6 +15,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import adminRoute from './routes/admin/index';
 import memberRoute from './routes/member/index';
 import indexRoute from './routes/index';
+
+// Utilities
 import { Database } from './utils/database';
 import { JwtModel } from './utils/jwt';
 
