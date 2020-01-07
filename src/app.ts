@@ -16,6 +16,7 @@ import adminRoute from './routes/admin/index';
 import memberRoute from './routes/member/index';
 import indexRoute from './routes/index';
 import { Database } from './utils/database';
+import { JwtModel } from './utils/jwt';
 
 // configure environment
 require('dotenv').config({ path: path.join(__dirname, '../config') });
@@ -49,6 +50,34 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// JWT
+const jwtModel = new JwtModel();
+
+const auth = async (req: Request, res: Response, next: NextFunction) => {
+  var token: string = null;
+
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.query && req.query.token) {
+    token = req.query.token;
+  } else {
+    token = req.body.token;
+  }
+
+  try {
+    var decoded = jwtModel.verify(token);
+    req.decoded = decoded;
+    next();
+  } catch (error) {
+    return res.send({
+      ok: false,
+      error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED),
+      code: HttpStatus.UNAUTHORIZED
+    });
+  }
+}
+
+// Routes
 // default route
 app.use('/', indexRoute);
 

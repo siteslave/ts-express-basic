@@ -2,7 +2,7 @@ FROM keymetrics/pm2:10-alpine
 
 LABEL maintainer="Satit Rianpit <rianpit@gmail.com>"
 
-WORKDIR /home/tsexpress
+WORKDIR /home/api
 
 RUN apk update && apk upgrade && apk add --no-cache alpine-sdk git \
   openssh \
